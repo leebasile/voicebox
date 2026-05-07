@@ -1,49 +1,88 @@
 {
   "name": "voicebox",
-  "version": "0.5.0",
-  "private": true,
-  "workspaces": [
-    "app",
-    "tauri",
-    "web",
-    "landing"
-  ],
+  "version": "1.0.0",
+  "description": "A powerful text-to-speech desktop application supporting multiple TTS engines",
+  "main": "dist/main/index.js",
   "scripts": {
-    "dev": "bun run setup:dev && cd tauri && bun run tauri dev",
-    "dev:web": "cd web && bun run dev",
-    "dev:landing": "cd landing && bun run dev",
-    "dev:server": "uvicorn backend.main:app --reload --port 17493",
-    "setup:dev": "bun run scripts/setup-dev-sidecar.js",
-    "build": "./scripts/build-server.sh && cd tauri && bun run tauri build",
-    "build:web": "cd web && bun run build",
-    "build:landing": "cd landing && bun run build",
-    "build:release": "./scripts/prepare-release.sh",
-    "generate:api": "./scripts/generate-api.sh",
-    "generate:keys": "cd tauri && bun tauri signer generate -w ~/.tauri/voicebox.key",
-    "build:server": "./scripts/build-server.sh",
-    "update:icons": "./scripts/update-icons.sh",
-    "convert:assets": "./scripts/convert-assets.sh",
-    "lint": "biome lint .",
-    "typecheck": "bunx tsc -p app/tsconfig.json --noEmit && cd web && bunx tsc --noEmit",
-    "lint:fix": "biome lint --write .",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "lint": "biome check --apply .",
     "format": "biome format --write .",
-    "format:check": "biome format .",
-    "check": "biome check .",
-    "check:fix": "biome check --write .",
-    "ci": "bun run typecheck && bun run build:web"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "electron-builder",
+    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac",
+    "package:linux": "electron-builder --linux",
+    "bump": "bump2version patch"
+  },
+  "keywords": [
+    "tts",
+    "text-to-speech",
+    "electron",
+    "voice",
+    "accessibility"
+  ],
+  "author": {
+    "name": "voicebox contributors"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^8.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.12",
-    "@types/node": "^20.0.0",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.6.0"
+    "@biomejs/biome": "^1.6.0",
+    "@electron-toolkit/eslint-config-ts": "^2.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@types/node": "^20.11.0",
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1",
+    "electron-vite": "^2.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.0",
+    "vue": "^3.4.15",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vue/tsconfig": "^0.5.1"
   },
   "engines": {
-    "bun": ">=1.0.0"
+    "node": ">=18.0.0"
   },
-  "packageManager": "bun@1.3.8",
-  "dependencies": {
-    "loaders.css": "^0.1.2",
-    "react-loaders": "^3.0.1"
+  "build": {
+    "appId": "com.voicebox.app",
+    "productName": "Voicebox",
+    "copyright": "Copyright © 2024 voicebox contributors",
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "!dist/renderer/assets/*.map"
+    ],
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] },
+        { "target": "zip", "arch": ["x64", "arm64"] }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.png",
+      "category": "Utility"
+    }
   }
 }
