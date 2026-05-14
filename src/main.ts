@@ -18,8 +18,8 @@ let mainWindow: BrowserWindow | null = null;
  */
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 620,
+    width: 1000,
+    height: 680,
     minWidth: 680,
     minHeight: 480,
     titleBarStyle: isMac ? 'hiddenInset' : 'default',
